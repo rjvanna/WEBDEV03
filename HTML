@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="css-lab03.css">
+</head>
+<body>
+
+    <h1>Student Dashboard</h1>
+
+    <input type="text" id="searchInput" placeholder="Search">
+    <select id="sortSelect">
+        <option value="none">Sort by</option>
+        <option value="name">Name (A-Z)</option>
+        <option value="age">Age (Ascending)</option>
+    </select>
+
+    <table id="studentTable">
+        <tr><th>ID</th><th>Name</th><th>Age</th><th>Course</th></tr>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <p id="no-results"; color:red;">No students found</p>
+
+    <h2>Add Student</h2>
+    <p id="errorMsg" style="color:red;"></p>
+
+    <form id="addStudent">
+        <input type="text" id="newName" placeholder="Name">
+        <input type="number" id="newAge" placeholder="Age">
+        <input type="text" id="newCourse" placeholder="Course">
+        <button type="submit">Add</button>
+    </form>
+
+    <script>
+        var students = [
+            { id: 1, name: "John", age: 21, course: "CS" },
+            { id: 2, name: "Jim",  age: 22, course: "IT" },
+            { id: 3, name: "Joe",  age: 20, course: "SE" }
+        ];
+        var nextId = 4;
+
+        function getFiltered() {
+            var search= document.getElementById('searchInput').value.toLowerCase();
+            var sort= document.getElementById('sortSelect').value;
+
+            var data= students.filter(function(s) {
+                return s.name.toLowerCase().includes(search);
+            });
+
+            if (sort=== 'name') data.sort(function(a, b) { return a.name > b.name ? 1 : -1; });
+            if (sort=== 'age')  data.sort(function(a, b) { return a.age - b.age; });
+
+            return data;
+        }
+
+        function renderTable() {
+            var data= getFiltered();
+            var tbody= document.getElementById('tableBody');
+            var noResults= document.getElementById('no-results');
+            var table= document.getElementById('studentTable');
+
+            tbody.innerHTML= '';
+
+            if (data.length=== 0) {
+                noResults.style.display= 'block';
+                table.style.display= 'none';
+            } else {
+                noResults.style.display= 'none';
+                table.style.display= 'table';
+                data.forEach(function(s) {
+                    tbody.innerHTML+= '<tr><td>'+ s.id +'</td><td>'+ s.name + '</td><td>' + s.age + '</td><td>' + s.course + '</td></tr>';
+                });
+            }
+        }
+
+        renderTable();
+
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('sortSelect').addEventListener('change', renderTable);
+
+        document.getElementById('addStudentForm').addEventListener('submit', function(e) 
+            e.preventDefault();
+            var name= document.getElementById('newName').value.trim();
+            var age= document.getElementById('newAge').value;
+            var course= document.getElementById('newCourse').value.trim();
+            var errorMsg= document.getElementById('errorMsg');
+
+            errorMsg.textContent = '';
+
+            if (!name || !age || !course) return (errorMsg.textContent = 'All field are required');
+            if (age <= 0)                 return (errorMsg.textContent = 'Age must be a number');
+
+            students.push({ id: nextId++, name: name, age: parseInt(age), course: course });
+
+            this.reset();
+            renderTable();
+        });
+    </script>
+</body>
+</html>
