@@ -1,0 +1,29 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    background-color: black;
+    color: white;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #555;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background: #222;
+}
+
+input, select, button {
+    padding: 6px;
+    margin: 4px 0;
+    background-color: #222;
+    color: white;
+    border: 1px solid #555;
+}
